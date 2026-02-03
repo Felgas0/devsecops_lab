@@ -3,41 +3,26 @@ name: "Security Scan"
 on: [push]
 
 jobs:
-  snyk-scan:
-    runs-on: ubuntu-latest
 
+  dependecy-scan:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # or your version
-
-      # 1) Open Source dependencies (package.json, package-lock)
-      - name: Snyk Open Source (dependencies)
+      - name: Snyk Open Source
         uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
           args: --all-projects --severity-threshold=low
 
-      # 2) Snyk Code (SAST: code issues + hardcoded secrets in app.js)
+  code-scan:
+    runs-on: ubuntu-latest
+    steps:
       - name: Snyk Code
-        uses: snyk/actions/node@master
+      - uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: code test
           args: --severity-threshold=low
 
-      # 3) (Optional) Monitor so Snyk alerts you when new vulns appear
-      - name: Snyk monitor
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-          args: --all-projects
 
