@@ -21,8 +21,9 @@ jobs:
   code-scan:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4 
       - name: Snyk Code
-      - uses: snyk/actions/node@master
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
