@@ -4,16 +4,20 @@ on: [push]
 
 jobs:
 
+  # job 1 DEPENDECY CHECK
   dependecy-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Snyk Open Source
         uses: snyk/actions/node@master
+        env: 
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
           args: --all-projects --severity-threshold=low
 
+  # job 2 STATIC CODE ANALYSIS
   code-scan:
     runs-on: ubuntu-latest
     steps:
