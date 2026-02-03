@@ -12,4 +12,6 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high --scan-all-unmanaged
+          args: 
+            - --severity-threshold=high 
+            - --scan-all-unmanaged
