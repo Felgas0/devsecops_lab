@@ -30,4 +30,17 @@ jobs:
           command: code test
           args: --severity-threshold=low
 
+  image_scan:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      - name: Build Docker Image
+        run: docker build -t vulnerable-app:local .
 
+      - name: Snyk container scan  
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: vulnerable-app:local
+          args: --file=Dockerfile --severity-threshold-high
