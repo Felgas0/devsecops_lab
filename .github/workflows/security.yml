@@ -84,3 +84,20 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk-iac.sarif
+
+  # gatekeeper keeps track of the results of the other jobs
+  gatekeeper:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [dependecy-scan, code-scan, image_scan, iac_scan] # wait for all these jobs
+    steps:
+      - name: Evaluate security results
+        run: |
+          if [[ "${{ needs.dependecy-scan.result }}" != "success" || \
+                "${{ needs.code-scan.result }}" != "success" || \
+                "${{ needs.image_scan.result }}" != "success" || \
+                "${{ needs.iac-scan.result }}" != "success" ]]; then
+            echo "Security scans found vulnerabilities. Blocking merge."
+            exit 1 # This physically fails the job and blocks the PR
+          fi
+          echo "All security scans passed!"
