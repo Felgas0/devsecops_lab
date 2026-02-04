@@ -6,13 +6,15 @@ permissions:
   security-events: write
 
 jobs:
-
   # job 1 DEPENDECY CHECK
   dependecy_scan:
     runs-on: ubuntu-latest
+    outputs: 
+      outcome: ${{ steps.snyk-test.outcome }}
     steps:
       - uses: actions/checkout@v4
       - name: Snyk Open Source
+        id: snyk-test
         uses: snyk/actions/node@master
         continue-on-error: true
         env: 
@@ -29,9 +31,12 @@ jobs:
   # job 2 STATIC CODE ANALYSIS
   code_scan:
     runs-on: ubuntu-latest
+    outputs:
+      outcome: ${{ steps.snyk-test.outcome }}
     steps:
       - uses: actions/checkout@v4 
       - name: Snyk Code
+        id: snyk-test
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
@@ -47,12 +52,15 @@ jobs:
 
   image_scan:
     runs-on: ubuntu-latest
+    outputs:
+      outcome: ${{ steps.snyk-test.outcome }}
     steps: 
       - uses: actions/checkout@v4
       - name: Build Docker Image
         run: docker build -t vulnerable-app:local .
 
       - name: Snyk container scan  
+        id: snyk-test
         uses: snyk/actions/docker@master
         continue-on-error: true
         env:
@@ -69,9 +77,12 @@ jobs:
 
   iac_scan:
     runs-on: ubuntu-latest
+    outputs:
+      outcome: ${{ steps.snyk-test.outcome }}
     steps: 
       - uses: actions/checkout@v4
       - name: Run iac scan
+        id: snyk-test
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
@@ -89,15 +100,16 @@ jobs:
   gatekeeper:
     runs-on: ubuntu-latest
     if: always()
-    needs: [dependecy_scan, code_scan, image_scan, iac_scan] # wait for all these jobs
+    needs: [dependecy_scan, code_scan, image_scan, iac_scan]
     steps:
       - name: Evaluate security results
         run: |
-          if [[ "${{ needs.dependecy_scan.result }}" != "success" || \
-                "${{ needs.code_scan.result }}" != "success" || \
-                "${{ needs.image_scan.result }}" != "success" || \
-                "${{ needs.iac_scan.result }}" != "success" ]]; then
+          # We check if any of the outcomes were 'failure'
+          if [[ "${{ needs.dependecy_scan.outputs.outcome }}" == "failure" || \
+                "${{ needs.code_scan.outputs.outcome }}" == "failure" || \
+                "${{ needs.image_scan.outputs.outcome }}" == "failure" || \
+                "${{ needs.iac_scan.outputs.outcome }}" == "failure" ]]; then
             echo "Security scans found vulnerabilities. Blocking merge."
-            exit 1 # This physically fails the job and blocks the PR
+            exit 1
           fi
           echo "All security scans passed!"
