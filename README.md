@@ -44,6 +44,6 @@ A custom Gatekeeper Job acts as the final authority on pull requests.
 
     Merge Protection: GitHub Branch Protection is configured to require a green "Gatekeeper" status, physically blocking insecure code from entering main.
 
-4. Software Bill of Materials (SBOM)
+4. TODO Software Bill of Materials (SBOM)
 
 For every successful run, the pipeline generates a CycloneDX SBOM. This provides full supply-chain transparency by listing every single ingredient (dependency) used in the build.
