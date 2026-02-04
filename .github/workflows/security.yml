@@ -36,7 +36,12 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: code test
-          args: --severity-threshold=low
+          args: --severity-threshold=low --sarif-file-output=snyk-code.sarif
+
+      - name: Upload sarif to github
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-code.sarif
 
   image_scan:
     runs-on: ubuntu-latest
@@ -51,4 +56,9 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: vulnerable-app:local
-          args: --file=Dockerfile --severity-threshold-high 
+          args: --file=Dockerfile --severity-threshold-high --sarif-file-output=snyk-image.sarif
+
+      - name: Upload sarif to github
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-image.sarif
