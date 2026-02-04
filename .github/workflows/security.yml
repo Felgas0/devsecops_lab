@@ -8,7 +8,7 @@ permissions:
 jobs:
 
   # job 1 DEPENDECY CHECK
-  dependecy-scan:
+  dependecy_scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
           sarif_file: snyk-deps.sarif
 
   # job 2 STATIC CODE ANALYSIS
-  code-scan:
+  code_scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4 
@@ -89,14 +89,14 @@ jobs:
   gatekeeper:
     runs-on: ubuntu-latest
     if: always()
-    needs: [dependecy-scan, code-scan, image_scan, iac_scan] # wait for all these jobs
+    needs: [dependecy_scan, code_scan, image_scan, iac_scan] # wait for all these jobs
     steps:
       - name: Evaluate security results
         run: |
-          if [[ "${{ needs.dependecy-scan.result }}" != "success" || \
-                "${{ needs.code-scan.result }}" != "success" || \
+          if [[ "${{ needs.dependecy_scan.result }}" != "success" || \
+                "${{ needs.code_scan.result }}" != "success" || \
                 "${{ needs.image_scan.result }}" != "success" || \
-                "${{ needs.iac-scan.result }}" != "success" ]]; then
+                "${{ needs.iac_scan.result }}" != "success" ]]; then
             echo "Security scans found vulnerabilities. Blocking merge."
             exit 1 # This physically fails the job and blocks the PR
           fi
