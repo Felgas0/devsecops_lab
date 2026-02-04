@@ -59,7 +59,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: vulnerable-app:local
-          args: --file=Dockerfile --severity-threshold-high --sarif-file-output=snyk-image.sarif
+          args: --sarif-file-output=snyk-image.sadrif --file=Dockerfile --severity-threshold-high 
 
       - name: Upload sarif to github
         uses: github/codeql-action/upload-sarif@v4
