@@ -72,13 +72,13 @@ jobs:
     steps: 
       - uses: actions/checkout@v4
       - name: Run iac scan
-        uses: snyk/action/node@master
+        uses: snyk/actions/node@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: iac test
-          args: --sarif-file-output=snyk-iac.sarif
+          args: terraform/main.tf --sarif-file-output=snyk-iac.sarif
 
       - name: Upload sarif to github
         uses: github/codeql-action/upload-sarif@v4
