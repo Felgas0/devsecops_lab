@@ -78,7 +78,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: iac test
-          args: terraform/main.tf --sarif-file-output=snyk-iac.sarif
+          args: --sarif-file-output=snyk-iac.sarif
 
       - name: Upload sarif to github
         uses: github/codeql-action/upload-sarif@v4
