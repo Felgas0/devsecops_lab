@@ -68,7 +68,7 @@ For every successful run, the pipeline generates a **CycloneDX SBOM**. This prov
 ## 🛠️ Installation & Setup
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/youruser/devsecops_lab.git](https://github.com/youruser/devsecops_lab.git)
+   git clone https://github.com/Felgas0/devsecops_lab.git
 
 2. **Configure Snyk:**
    
